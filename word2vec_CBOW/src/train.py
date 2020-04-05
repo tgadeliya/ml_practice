@@ -35,9 +35,11 @@ def train_loopNS(model,  dataloader,  optimizer, loss_function, device,epochs = 
     for e in range(epochs):
         agr_loss = 0
         for i, (context, target, neg_samples) in enumerate(dataloader, 1):
+            
             context = context.to(device=device)
             target = target.to(device=device)
-             
+            neg_samples = neg_samples.to(device=device) 
+                
             loss = model(context, target, neg_samples)
 
             optimizer.zero_grad()            
