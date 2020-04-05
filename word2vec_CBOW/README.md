@@ -12,7 +12,10 @@ This repo contains two models:
   - train model
   - intrinsic evaluation
   - t-SNE visualization
-  
+
+### Data
+ Used text8 file from http://mattmahoney.net/dc/textdata.html. This is Wikipedia cleaned text. 
+ 
 ### How to use
 Code for models, training and batcher located in src/. 
 Just run jupyter notebook
