@@ -6,8 +6,16 @@ This repo contains two pytorch models:
   - Model outputs loss
   
 # How to use
-Code for training 
-## Colab
+Code for models, training and batcher located in src/
+Run jupyter notebook
+
+## from colab
+  - 1) 
+  
+  "!git clone https://github.com/tgadeliya/ml_practice.git
+  !mv "/content/ml_practice/word2vec_CBOW/src" "/content"
+  !rm -r "/content/ml_practice"
+  "
 # Evaluation 
 Only intrinsic evaluation on 
 
