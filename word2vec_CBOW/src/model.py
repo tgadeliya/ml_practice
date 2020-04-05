@@ -58,7 +58,7 @@ class CBOW_NS(nn.Module):
         neg_batch = F.logsigmoid(torch.bmm(-u_k, h))
         neg = torch.sum(neg_batch)
         
-        return -(pos + neg)
+        return (-(pos + neg))/x.shape[0]
     
     def get_vector(self, word):
         word_in_voc = self.word_2_id.get(word,0)
