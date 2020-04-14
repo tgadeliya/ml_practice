@@ -1,5 +1,8 @@
+import json
 import numpy as np
 
+
+      
 class LogisticRegressionBinary:
     
     def __init__(self, C=1, 
@@ -12,7 +15,8 @@ class LogisticRegressionBinary:
                  logging = False,
                  num_classes=1):
         
-        self.rand_gen = np.random.RandomState(random_state) # set generator specific to model object
+        self.random_state = random_state
+        self.rand_gen = np.random.RandomState(self.random_state) # set generator specific to model object
         
         self.C = C
         self.lr_init = learning_rate_init
@@ -28,6 +32,11 @@ class LogisticRegressionBinary:
         self.loss_history = []
         self.num_classes = num_classes
         
+        self.no_loss_eval = True
+        
+        self.model_params_dict = vars(self).copy()
+        del self.model_params_dict["rand_gen"]
+        
         
     def fit(self, X: np.ndarray, y: np.ndarray) -> None:
         
@@ -40,9 +49,9 @@ class LogisticRegressionBinary:
             self.w = self.rand_gen.randn(self.d, self.num_classes)
             self.h = np.zeros_like(self.w)
         
-        self.lr = self.lr_init
-        self.epoch = 0 
-        self.no_epoch_improv = 0
+            self.lr = self.lr_init
+            self.epoch = 0 
+            self.no_epoch_improv = 0
         
         self.train()
             
@@ -56,18 +65,18 @@ class LogisticRegressionBinary:
                 self.optimizer_step_on_batch(grad_batch)
             
             self.epoch += 1
-            train_loss = self.loss(self.X, self.y)
+            #if self.no_loss_eval:
+            #    train_loss = self.loss(self.X, self.y)
             train_acc = self.evaluate(self.X, self.y)
             
-            print(f"Epoch {e}: train_loss: {train_loss}, train_acc: {train_acc}")
-            print("_____________________________")
+            #print(f"Epoch {e}: train_loss: -, train_acc: {train_acc}")
+            #print("_____________________________")
             
-            self.loss_history.append(train_loss)
+            #self.loss_history.append(train_loss)
             
             self.lr_scheduler()
             
-            self.no_epoch_improv = (self.no_epoch_improv + 1) if (e > 2 and (self.loss_history[-1] - self.loss_history[-2])<self.tol) else 0
-            
+            #self.no_epoch_improv = (self.no_epoch_improv + 1) if (e > 2 and (self.loss_history[-1] - self.loss_history[-2])<self.tol) else 0
             if (self.no_epoch_improv > 3):
                 print("Stopping criteria is met!")
                 break
@@ -114,17 +123,29 @@ class LogisticRegressionBinary:
         y_pred = np.where(probs>0.5, 1, -1)
         acc = sum(y_pred == y_true)/ len(y_true)
         return acc
+      
+    def save_model(self, file_path):
+        
+        model_params_dict = self.model_params_dict
+        model_params_dict["w"] = self.w.tolist()
+        
+        json_file = json.dumps(model_params_dict)
+        with open(file_path, "w") as file:
+            file.write(json_file)
+        
+    def load_model(self, file_path):
+        with open(file_path, "r") as f:
+            model_params_dict = json.load(f)
+        
+        model_params_dict["w"] = np.asarray(model_params_dict["w"])  
+        
+        self.model_params_dict = model_params_dict.copy()
+        self.__dict__ = model_params_dict
+        
+        self.rand_gen = np.random.RandomState(self.random_state) # recreate random generator
     
 class LogisticRegressionMulti(LogisticRegressionBinary):
-    
-    def predict(self, X: np.ndarray) -> np.ndarray:        
-        return self.predict_proba(X).argmax(axis=1)
-    
-    def predict_proba(self, X: np.ndarray) -> np.ndarray:        
-        out = np.dot(self.add_bias(X), self.w)
-        probs = self.softmax(out)
-        return probs 
-    
+  
     def softmax(self, x):
         "Softmax over batch"
         x -= x.max(axis=1).reshape(-1,1)
@@ -151,7 +172,7 @@ class LogisticRegressionMulti(LogisticRegressionBinary):
     
     def predict(self, X: np.ndarray) -> np.ndarray:        
         probs = self.predict_proba(X)
-        return probs.argmax(axis=1)+2
+        return probs.argmax(axis=1) + 2 # shift from idx to numbers
     
     def predict_proba(self, X: np.ndarray) -> np.ndarray:        
         out = np.dot(self.add_bias(X), self.w)

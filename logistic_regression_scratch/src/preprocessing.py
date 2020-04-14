@@ -2,9 +2,11 @@ import numpy as np
 import idx2numpy
 
 
-def load_data(file:str, path="data"):
-    """Load data from files without 1,0 classes"""
-    X_file, y_file = f"{path}/{file}-images-idx3-ubyte", f"{path}/{file}-labels-idx1-ubyte"
+def load_data(file:str):
+    """Load data from files without 1,0 classes
+       Use from model directory root
+    """
+    X_file, y_file = f"data/{file}-images-idx3-ubyte", f"data/{file}-labels-idx1-ubyte"
     
     #load labels to create appropriate class mask
     y = idx2numpy.convert_from_file(y_file)
@@ -31,3 +33,17 @@ class Scaler:
         "Standardize mean=0"
         return (data - self.mean)/self.std
     
+    
+def Polynomial(X):
+    X = np.asfortranarray(X[:])
+    N, d = X.shape
+    
+    idx_combinations = list(itertools.combinations(range(d), 2))
+    new_d = len(idx_combinations) + d
+    
+    X_poly = np.ones((N, new_d))
+    X_poly[:,:d] = X[:]
+    for idx, (i, j) in enumerate(idx_combinations, d):
+        X_poly[:, idx] = X[:, i] * X[:,j]
+    
+    return X_poly
