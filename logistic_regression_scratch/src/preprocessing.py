@@ -1,6 +1,6 @@
 import numpy as np
 import idx2numpy
-
+import itertools
 
 def load_data(file:str):
     """Load data from files without 1,0 classes
@@ -31,7 +31,7 @@ class Scaler:
 
     def standardize(self, data):
         "Standardize mean=0"
-        return (data - self.mean)/self.std
+        return (data - self.mean) / self.std
     
     
 def Polynomial(X):
@@ -47,3 +47,12 @@ def Polynomial(X):
         X_poly[:, idx] = X[:, i] * X[:,j]
     
     return X_poly
+
+def PCAimpl(x, k):
+    x -= np.mean(x, axis=0)
+    cov = np.cov(x, rowvar=False)
+    eigval, eigvect = np.linalg.eig(cov)
+    desc_idx_eig_val = np.argsort(eigval)[::-1]
+    
+    eig_k = eigvect[:, desc_idx_eig_val][:,:k]
+    return x.dot(eig_k)

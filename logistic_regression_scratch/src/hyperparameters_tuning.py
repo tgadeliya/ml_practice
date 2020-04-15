@@ -41,3 +41,10 @@ class RandomSearch:
             params[param_name] = self.rand_gen.choice(param_val, size=1)[0]
         
         return params
+      
+      
+params = {"C" : [0.3, 1, 2],
+          "learning_rate_init" : [10**(-x) for x in np.arange(1,5,1, dtype="float")],
+          "weight_decay" : np.arange(6, 9 , 1) * 0.1,
+          "alpha" : np.arange(6, 9 , 1) * 0.1
+}
