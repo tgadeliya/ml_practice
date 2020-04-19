@@ -1,0 +1,12 @@
+#### Chociaż wyniki dla takiego prostego podejścia są dość dobre, można spróbować otrzymać lepszy wynik klasyfikacji za pomocą dodania nowych zmiennych. Na przykład można pomnożyć 784 wejściowe zmienne. W takim przypadku model się komplikuje, liczba jego parametrów wzrasta i można założyć że model jest w stanie uczyć się bardziej skomplikowanych wzorów. Jednak nowe zmienne nie są interpretowalne, co jest wadą tego podejścia.
+
+
+#### Kolejnym ograniczeniem jest to, że stosując powyższą metodę do wejściowej macierzy, dostajemy binom(784,2) + 784 = 306936 + 784 nowych zmiennych. Wykorzystanie ich w analizie wymagałoby ogromnych nakładów obliczeniowych. W związku na początku należy zredukować liczbę zmiennych wejściowych. Dokonać tego można za pomocą analizy głownych składowych (PCA). Niestety mój komputer nie radzi sobie nawet z malą ilością zmiennych, dlatego dalsza część analizy została przeprowadzona w Google Colab. Wykorzystywany notebook znajduję się w katalogu głównym pod nazwą logreg_rs_colab.ipynb.
+
+#### Krótki opis przebiegu procesu uczenia w Colab:
+    - Załadowałem notebook do Colab i skopiowałem folder src/ do katologu content/ (domyślny katalog)
+    - Przeprowadziłem analizę głównych składowych i wybrałem 150 pierwszych składowych
+    - Dla nowej macierzy parametrów stworzyłem nowe zmienne wielomianowe. Wymiar nowej macierzy [N, 11325]
+    - Przeprowadziłem wyszukiwanie hiperparametrów
+    - Najlepszymi parametrami okazały się parametry podane poniżej
+    - Stworzyłem model z najlepszymi parametrami i od nowa przeprowadziłem jej uczenie, ale tym razem na całości danych
