@@ -1,9 +1,8 @@
 
 
 
-Implementation https://web.stanford.edu/~jurafsky/slp3/5.pdf
-Stochastic Gradient Descent Tricks
-L´eon Bottou
+- [Gradient implementation from Speech and Language Processing. Daniel Jurafsky & James H. Martin](https://web.stanford.edu/~jurafsky/slp3/5.pdf)
+- [Leon Bottou, Stochastic Gradient Descent Tricks](https://www.microsoft.com/en-us/research/wp-content/uploads/2012/01/tricks-2012.pdf) 
 
 ## Project structure:
     - data/  
